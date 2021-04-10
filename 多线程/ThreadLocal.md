@@ -3,6 +3,8 @@
 ThreadLocal可以理解为TreadLocalMap的封装，ThreadLocal中存了ThreadLocalMap，然后根据currentThread获取对应的map，每一个map中都存了键值对，key就是ThreadLocal，不同的线程有不同的ThreadLocal。
 
 看一下ThreadLocal中的set方法，把对象自己作为key存进map
+
+ThreadLocalMap是一个Entry数组。Entry内是一个弱引用key和强引用value
 ```java
 public void set(T value) {
     Thread t = Thread.currentThread();
@@ -11,6 +13,35 @@ public void set(T value) {
         map.set(this, value);
     else
         createMap(t, value);
+}
+
+ThreadLocalMap getMap(Thread t) {
+    return t.threadLocals;
+}
+
+void createMap(Thread t, T firstValue) {
+    t.threadLocals = new ThreadLocalMap(this, firstValue);
+}
+
+// 静态内部类
+static class ThreadLocalMap {
+        static class Entry extends WeakReference<ThreadLocal<?>> {
+            /** The value associated with this ThreadLocal. */
+            Object value;
+
+            Entry(ThreadLocal<?> k, Object v) {
+                super(k);
+                value = v;
+            }
+        }
+
+        ThreadLocalMap(ThreadLocal<?> firstKey, Object firstValue) {
+            table = new Entry[INITIAL_CAPACITY];
+            int i = firstKey.threadLocalHashCode & (INITIAL_CAPACITY - 1);
+            table[i] = new Entry(firstKey, firstValue);
+            size = 1;
+            setThreshold(INITIAL_CAPACITY);
+        }
 }
 ```
 
