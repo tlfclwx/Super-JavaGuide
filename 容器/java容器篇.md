@@ -302,8 +302,76 @@ else if ((fh = f.hash) == MOVED)
 > ConcurrentHashMap 和 HashTable的区别
 
 - 底层不一样，ConcurrentHashMap.17以前是segment分段数组+HashEntry+链表，1.8之后是Node数组+链表。而HashTable是数组+链表
-- ==线程安全方面：ConcurrentHashMap1.7以前是锁一个segment，1.8开始是锁Node的头节点。所以一部分锁了，其他部分还是可以访问的。而HashTable是直接锁整个Table，其他线程不能访问了==
+- ==线程安全方面：ConcurrentHashMap1.7以前是锁一个segment，1.8开始是锁Node的头节点,通过synchronized锁住一个node。所以一部分锁了，其他部分还是可以访问的。而HashTable是直接锁整个Table，其他线程不能访问了==
 - ==ConcurrentHashMap通过volatile保证读操作的可见性，读的时候不需要上锁，而HashTable中get方法和put方法，都用synchronized修饰了。==
+
+```java
+//1.8中的concurrenthashmap
+final V putVal(K key, V value, boolean onlyIfAbsent) {
+    if (key == null || value == null) throw new NullPointerException();
+    int hash = spread(key.hashCode());
+    int binCount = 0;
+    for (Node<K,V>[] tab = table;;) {
+        Node<K,V> f; int n, i, fh;
+        if (tab == null || (n = tab.length) == 0)
+            tab = initTable();
+        else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
+            if (casTabAt(tab, i, null,
+                            new Node<K,V>(hash, key, value, null)))
+                break;                   // no lock when adding to empty bin
+        }
+        else if ((fh = f.hash) == MOVED)
+            tab = helpTransfer(tab, f);
+        else {
+            V oldVal = null;
+            // 锁住了node
+            synchronized (f) {
+                if (tabAt(tab, i) == f) {
+                    if (fh >= 0) {
+                        binCount = 1;
+                        for (Node<K,V> e = f;; ++binCount) {
+                            K ek;
+                            if (e.hash == hash &&
+                                ((ek = e.key) == key ||
+                                    (ek != null && key.equals(ek)))) {
+                                oldVal = e.val;
+                                if (!onlyIfAbsent)
+                                    e.val = value;
+                                break;
+                            }
+                            Node<K,V> pred = e;
+                            if ((e = e.next) == null) {
+                                pred.next = new Node<K,V>(hash, key,
+                                                            value, null);
+                                break;
+                            }
+                        }
+                    }
+                    else if (f instanceof TreeBin) {
+                        Node<K,V> p;
+                        binCount = 2;
+                        if ((p = ((TreeBin<K,V>)f).putTreeVal(hash, key,
+                                                        value)) != null) {
+                            oldVal = p.val;
+                            if (!onlyIfAbsent)
+                                p.val = value;
+                        }
+                    }
+                }
+            }
+            if (binCount != 0) {
+                if (binCount >= TREEIFY_THRESHOLD)
+                    treeifyBin(tab, i);
+                if (oldVal != null)
+                    return oldVal;
+                break;
+            }
+        }
+    }
+    addCount(1L, binCount);
+    return null;
+}
+```
 
 > concurrenthashmap 1.8中Node合适创建？扩容机制
 
