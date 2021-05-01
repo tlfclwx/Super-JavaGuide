@@ -85,7 +85,7 @@ redis有一个过期字典，这个字典的key指向redis数据库中的某个k
 
 惰性删除：只会在取出key的时候判断是否过期
 
-定期删除：每隔一段时间抽取一批key执行删除过期key操作
+定期删除：每隔一段时间==抽取一批==key执行删除过期key操作
 
 redis采用定期删除+惰性删除
 
@@ -210,6 +210,7 @@ AOF实时性更好，每执行一条更改redis中数据的命令，redis就会�
 - hash
   - ![](https://gitee.com/super-jimwang/img/raw/master/img/20210314090300.png)
   ```c
+  // 每个dict内部有两个dictht，每一个dictht中有若干个dictEntry，每一个dictEntry链接了一个链表
   typedef struct dict {
     // 类型特定函数
     dictType *type;
@@ -271,6 +272,7 @@ AOF实时性更好，每执行一条更改redis中数据的命令，redis就会�
   ```
   - encoding字段用来说明contents的类型。可以为int16_t, int32_t, int64_t。支持encoding升级，不支持降级
 - 压缩列表
+  
   - 压缩列表的原理：压缩列表并不是对数据利用某种算法进行压缩，而是将数据按照一定规则编码在一块连续的内存区域，目的是节省内存。
 - 快速链表 quicklist
 
@@ -294,7 +296,7 @@ AOF实时性更好，每执行一条更改redis中数据的命令，redis就会�
 
 bgsave：
 
-父进程fork一个子进程，它们的虚拟内存会指向同一个物理地址，共享内存。这时候父进程会继续处理client请求，进行写时复制操作，如果有新数据要写，那么就会创建一个内存页面的副本，继续修改。而子进程将内存中的内容写入临时RDB文件，快照写入完成后，替换原来的快照文件，然后子进程退出。
+父进程fork一个子进程，它们的虚拟内存会指向同一个物理地址，共享内存。这时候父进程会继续处理client请求，进行写时复制操作，如果有新数据要写，那么就会创建一个内存页面的副本，继续修改。==而子进程将内存中的内容写入临时RDB文件，快照写入完成后，替换原来的快照文件，然后子进程退出==。
 ![redis2](https://gitee.com/super-jimwang/img/raw/master/img/20210315200954.png)
 
 > aof如何实现

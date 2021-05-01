@@ -79,7 +79,7 @@ c. 如果这个Bean已经实现了ApplicationCOntextAware接口，会调用setAp
 
 （1）切面（Aspect）：被抽取的公共模块，可能会横切多个对象。 在Spring AOP中，切面可以使用通用类（基于模式的风格） 或者在普通类中以 @AspectJ 注解来实现。
 
-（2）连接点（Join point）：指方法，在Spring AOP中，一个连接点 总是 代表一个方法的执行。
+（2）连接点（Joint point）：指方法，在Spring AOP中，一个连接点 总是 代表一个方法的执行。
 
 （3）通知（Advice）：在切面的某个特定的连接点（Join point）上执行的动作。通知有各种类型，其中包括“around”、“before”和“after”等通知。许多AOP框架，包括Spring，都是以拦截器做通知模型， 并维护一个以连接点为中心的拦截器链。
 
@@ -97,9 +97,9 @@ c. 如果这个Bean已经实现了ApplicationCOntextAware接口，会调用setAp
 > 讲一下@SpringBootApplication
 
 这个注解可以看作是
-- @EnableAutoCinfuguration:根据情况自动加载配置类，将注解类的包下所有类注入spring（不包括子包）
+- @EnableAutoConfiguration:根据情况自动加载配置类，将注解类的包下所有类注入spring（不包括子包）
   - @autoConfigurationPackages注解类包下所有类注入spring
-  - 又通过@Import自动注入需要的配置累
+  - 又通过@Import自动注入需要的配置类
 - @ComponentScan:将包及其子包与指定的包和子包内的所有类注入spring
 - @SpringBootConfiguration
   - @Configuration: 允许在Spring上下文中注册额外的bean
@@ -279,3 +279,9 @@ public class MyFactoryBean implements FactoryBean {
 **总结**
 - 要获取FactoryBean则添加&符号。eg: context.getBean("&myFactoryBean")
 - 要获取FactoryBean维护的bean则不添加&符号。eg: context.getBean("myFactoryBean")
+
+
+
+## Springbean的作用域
+
+![image-20210427190707563](https://gitee.com/super-jimwang/img/raw/master/img/20210427190707.png)

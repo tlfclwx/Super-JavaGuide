@@ -18,7 +18,7 @@
   - HashSet 基于HashMap实现
   - LinkedHashSet 基于LinkedHashMap实现
   - SortedSet
-  - TreeSet 红黑树，有序
+  - TreeSet 红黑树，有序，基于TreeMap（会根据key给出的定义排序）
 
 > ArrayList扩容的过程，以及涉及的函数
 
@@ -405,7 +405,7 @@ synchronized 只锁定当前链表或红黑二叉树的首节点，这样只要 
 
 > ConcurrentHashMap1.7中，默认的Segment个数是多少，负载因子是多少，初始化的数组长度是多少？
 
-默认的Segment是16，也就是对应着16个线程的并发，负载因子是0.75，每个segment的初始化数组长度是2.
+默认的Segment是16，也就是对应着16个线程的并发，负载因子是0.75，==每个segment的初始化数组长度是2.==
 
 > ConcurrentHashMap1.7的put流程说一下
 

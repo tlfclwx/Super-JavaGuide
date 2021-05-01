@@ -4,6 +4,7 @@
 - 如果有充足的时间，建议阅读每个技术相关的书籍，夯实计算机基础
 - 知识点需要相互连接起来成知识网
 - 看源码是最简洁明了解决问题的方法
+- 手撕代码推荐[labuladong fucking-algorithm](https://github.com/labuladong/fucking-algorithm)
 
 ## 关于本项目
 - 大部分的题目来自[JavaGuide](https://github.com/Snailclimb/JavaGuide)。在此基础上，结合了自己的面试经历，对一部分的问题做了深入的剖析。

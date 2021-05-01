@@ -10,14 +10,15 @@ redo log是InnoDB存储引擎层的日志，又称重做日志文件，用于记
 
 ==redo log是循环写，可以配置为1组4个文件，每个文件的大小是1GB==
 
-**redo log通常是物理日志，记录的是数据页的物理修改，而不是某一行或某几行修改成怎样怎样，它用来恢复提交后的物理数据页(恢复数据页，且只能恢复到最后一次提交的位置)。**
+**==redo log通常是物理日志==，记录的是数据页的物理修改，而不是某一行或某几行修改成怎样怎样，它用来恢复提交后的物理数据页(恢复数据页，且只能恢复到最后一次提交的位置)。**
+
 ## undo log
-undo log用于回滚用，当进行操作是，undo log会写反操作。比如mysql进行insert，则undo log记录delete
+undo log用于回滚用，当进行操作时，undo log会写反操作。比如mysql进行insert，则undo log记录delete
 
 **undo用来回滚行记录到某个版本。undo log一般是逻辑日志，根据每行记录进行记录。记录操作**
 
 ## binlog
-binlog是属于MySQL Server层面的，又称为归档日志，属于逻辑日志，是以二进制的形式记录的是这个语句的原始逻辑，依靠binlog是没有crash-safe能力的
+binlog是属于MySQL Server层面的，又称为归档日志，属于逻辑日志，是以二进制的形式记录的是这个语句的原始逻辑，依靠binlog是没有crash-safe能力的。主要是用于主从复制的时候做同步用的。直接把binlog给从机，从机按照binlog执行语句就行了。
 
 ### redo log和binlog区别
 redo log是属于innoDB层面，binlog属于MySQL Server层面的，这样在数据库用别的存储引擎时可以达到一致性的要求。

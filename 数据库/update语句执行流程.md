@@ -20,7 +20,7 @@ https://blog.csdn.net/qq_33347239/article/details/103895518
 - 不更新主键。
 - 更新前的列和更新后的列所占用的存储空间一样大。
 
-请重点关注"存储空间一样大"
+==请重点关注"存储空间一样大"==
 这也是为什么我特地要说col的字段类型是varchar，而不是char和varchar都可以。
 关于varchar和char的区别大家可自行百度，在这里不在赘述。
 在这里你只需知道char占用的长度和空间都是固定的就可以了。
@@ -36,7 +36,8 @@ https://blog.csdn.net/qq_33347239/article/details/103895518
 
 - 不更新主键。
 - 更新前的列和更新后的列所占用的存储空间不同。
-  是不是感到有些意外？但事实就是如此。
+  
+是不是感到有些意外？但事实就是如此。
 
 除此之外，如果你熟悉delete的流程，那你可能会认为这个"删除再插入"是指先经过 delete_mask 的中间状态，然后再被 purge 的回收，之后再是insert流程balabala~的。
 
@@ -63,7 +64,7 @@ https://blog.csdn.net/qq_33347239/article/details/103895518
 其实就是为了让主键索引列保持有序。
 借用一下小册子中的一张图。
 
-![树结构简图](https://gitee.com/super-jimwang/img/raw/master/img/20210409173802)
+![](https://gitee.com/super-jimwang/img/raw/master/img/20210410170536.png)
 
 其中橙色单元格表示的就是主键，可以看到聚簇索引（二级索引）的数据都是根据主键（索引列）排序的。
 
